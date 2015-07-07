@@ -1,9 +1,9 @@
 //: Playground - noun: a place where people can play
 
 import UIKit
-
 var str = "Protocol Oriented Programming"
 
+//Reminder: there is a Snippets.swift file inside the bundle
 
 protocol DataSource {
     typealias Element
@@ -71,10 +71,9 @@ enum DataSourceType {
 }
 
 
-
+//Protocol with Generic methods
 protocol Source {
     func elements<T>(t: T) -> [T]
-    //func generateElements<T>() -> [T]
 }
 
 class TestSource: Source {
@@ -92,3 +91,27 @@ let tester = TestSource()
 tester.elements("Hello")
 tester.elements(100)
 tester.elements(Person())
+
+
+
+//DataSource as a superClass
+class GenericDS<T> {
+    var elements = [T]()
+    func generateElements() -> [T] {
+        return []
+    }
+}
+
+class SubGenericDS<A: Person>: GenericDS<A> {
+    func put<A>(a:A) -> A {
+        return a
+    }
+}
+
+let sub = SubGenericDS<AppleContact>()
+let sub2 = SubGenericDS<GoogleContact>()
+let subs =  [sub, sub2]
+
+
+//sub.put("Hello")
+
