@@ -82,3 +82,49 @@ func getContacts(page: Int) -> (result:[String], nextPage:Int?) {
 }
 
 getContacts()
+
+extension Array {
+    func empty() -> Bool {
+        return self.count == 0
+    }
+    
+    var head: Element? {
+        get {
+            return self.first
+        }
+    }
+    
+    var tail: Array<Element>? {
+        get {
+            if self.empty() { return nil }
+            return Array(dropFirst(self))
+        }
+    }
+    
+
+    func foldl<B>(acc: B, f: (B,T)->B) -> B {
+        return _foldl(acc, list: self, f: f)
+    }
+    
+    func _foldl<A,B>(acc: B, list: [A], f: (B, A) -> B) -> B {
+        if list.empty() { return acc }
+        return _foldl(f(acc, list.head!), list: list.tail!, f: f)
+    }
+
+}
+
+
+
+//Arguments
+let format = "alt=json"
+let maxResults = "max-results=500"
+let updatedMin = "updated-min=2000-07-09T00:00:00"
+
+var args = [format, maxResults, updatedMin]
+
+var concated = args.foldl(""){ (result, item) in
+    return result + "&" + item
+}
+concated.replaceRange(Range(start: concated.startIndex, end: concated.startIndex.successor()), with: "?")
+
+println(concated)
