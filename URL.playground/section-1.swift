@@ -113,18 +113,35 @@ extension Array {
 
 }
 
+let clientId = "d46d6144433f456ca7016edc6b0c7e1f"
+let baseURL = "https://instagram.com/"
+let loginPath = "oauth/authorize"
+
+var ownBaseURL: String {
+    return String("ig\(clientId)://authorize")
+}
 
 
 //Arguments
 let format = "alt=json"
 let maxResults = "max-results=500"
 let updatedMin = "updated-min=2000-07-09T00:00:00"
+let redirect = "redirect_uri=\(ownBaseURL)"
 
-var args = [format, maxResults, updatedMin]
+var args = [format, maxResults, updatedMin, redirect]
 
 var concated = args.foldl(""){ (result, item) in
     return result + "&" + item
 }
 concated.replaceRange(Range(start: concated.startIndex, end: concated.startIndex.successor()), with: "?")
 
-println(concated)
+
+let queryAllowedSet = NSCharacterSet.URLQueryAllowedCharacterSet()
+(concated as NSString).stringByAddingPercentEncodingWithAllowedCharacters(queryAllowedSet)
+
+
+
+
+
+
+
