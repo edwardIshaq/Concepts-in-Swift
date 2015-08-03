@@ -141,7 +141,38 @@ let queryAllowedSet = NSCharacterSet.URLQueryAllowedCharacterSet()
 
 
 
+func queryString(dict: [String: String]) -> String {
+    let queryAllowedSet = NSCharacterSet.URLQueryAllowedCharacterSet()
+
+    let queries = reduce(dict, [String]()) { (accum: [String], elem: (key: String, value: String)) -> [String] in
+        let additionalQuery = String("\(elem.key)=\(elem.value)")
+        if let encodedQuery = (additionalQuery as NSString).stringByAddingPercentEncodingWithAllowedCharacters(queryAllowedSet) {
+            var copy = accum
+            copy.append(encodedQuery as String)
+            return copy
+        }
+        return accum
+    }
+    
+    var concated = queries.foldl(""){ (result, item) in
+        return result + (count(result) > 0 ? "&" : "") + item
+    }
+
+    return concated
+}
+
+let params = ["client_id" : clientId,
+    "response_type": "token",
+    "redirect_uri": ownBaseURL,
+    "scope" : "basic"]
+
+let query = queryString(params)
 
 
+let urlComp = NSURLComponents()
+urlComp.scheme = "http"
+urlComp.host = "instagram.com"
+urlComp.path = "/oauth/authorize"
+urlComp.query = query
 
-
+urlComp.URL
