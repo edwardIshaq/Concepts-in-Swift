@@ -161,7 +161,15 @@ class Consumer {
         self.protoInstance = nil
     }
     
-    func doSomething() {
+    func doSomethingWith(object: NSObject) -> String {
+        return object.description
+    }
+    
+    func doSomething() -> String? {
+        if let x = protoInstance as? NSObject {
+            let result = doSomethingWith(x)
+            return result
+        }
         if let x = protoInstance {
 //            x.copy() //'ProtoTest' does not have a member named 'copy'
         }
@@ -169,10 +177,12 @@ class Consumer {
 //            x.copy()    //protocol<NSObjectProtocol, ProtoTest> does not have a member named 'copy'
             
         }
+        return nil
     }
 }
 
 
-
+let myConsumer = Consumer(x: AClass())
+myConsumer.doSomething()
 
 
