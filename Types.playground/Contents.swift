@@ -127,3 +127,52 @@ for (idx, x) in enumerate(myArray) {
         println("\(x) is supposed to be \(VC2.self)")
     }
 }
+
+
+
+//Sharing Base class and protocol Objc: NSObject<Protocol>
+
+protocol ProtoTest {
+    var foo: Int { get set }
+}
+
+
+class AClass: NSObject,  ProtoTest {
+    var foo: Int = 3
+}
+
+
+class BClass: NSObject,  ProtoTest {
+    var foo: Int = 4
+}
+
+class Consumer {
+    
+    var protoInstance: ProtoTest?  //Does not cary any information of the class just the protocol
+    var protoInstance2: protocol<NSObjectProtocol, ProtoTest>?
+    
+    init(x: ProtoTest) {
+        self.protoInstance = x
+        self.protoInstance2 = nil
+    }
+    
+    init(x: protocol<NSObjectProtocol, ProtoTest>) {
+        self.protoInstance2 = x
+        self.protoInstance = nil
+    }
+    
+    func doSomething() {
+        if let x = protoInstance {
+//            x.copy() //'ProtoTest' does not have a member named 'copy'
+        }
+        if let x = protoInstance2 {
+//            x.copy()    //protocol<NSObjectProtocol, ProtoTest> does not have a member named 'copy'
+            
+        }
+    }
+}
+
+
+
+
+
