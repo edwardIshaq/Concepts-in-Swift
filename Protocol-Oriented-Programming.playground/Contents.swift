@@ -113,6 +113,22 @@ let sub2 = SubGenericDS<GoogleContact>()
 let subs =  [sub, sub2]
 
 
+struct Media {
+    let url: String
+}
 
-//sub.put("Hello")
+//class StructGenericDS<T: Media>: GenericDS<T> {
+//    override func generateElements() -> [Media] {
+//        let media1 = Media(url: "a")
+//        let media2 = Media(url: "b")
+//        let elems = [media1, media2]
+//        self.elements = elems
+//        
+//        return elements
+//    }
+//}
+//
+//let structDS = StructGenericDS<Media>()
+//println(structDS.elements)
+
 

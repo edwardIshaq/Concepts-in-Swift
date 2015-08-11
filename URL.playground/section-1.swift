@@ -25,7 +25,7 @@ let urlString = contacts.absoluteString!
 let queryStartRange = urlString.rangeOfString("&", options: NSStringCompareOptions.LiteralSearch, range: nil, locale: nil)
 queryStartRange?.endIndex
 urlString.endIndex
-let queryString = urlString.substringFromIndex((queryStartRange?.startIndex)!)
+let _queryString = urlString.substringFromIndex((queryStartRange?.startIndex)!)
 
 
 extension NSURL {
@@ -176,3 +176,36 @@ urlComp.path = "/oauth/authorize"
 urlComp.query = query
 
 urlComp.URL
+
+
+let fragment = "access_token=18235201.d46d614.2608bd9fe15e478e95fd5c42689a94fe&var2=xxx&var3=yyy"
+let responseParams = (fragment as NSString).componentsSeparatedByString("&") as? [String]
+println(responseParams)
+let reponseDict = responseParams?.reduce([String:String](), combine: { (dict: [String:String], param: String) -> [String:String] in
+    let splitParams = (param as NSString).componentsSeparatedByString("=") as! [String]
+    println( ">> \(splitParams)")
+    var acc = dict
+    if count(splitParams) == 2 {
+        acc[splitParams[0]] = splitParams[1]
+    }
+    
+    return acc
+    
+})
+
+reponseDict
+
+
+
+let maybeString: String? = "test"
+let emptyString: String? = nil
+
+func doubleMe(str: String) -> String {
+    return String("\(str) \(str)")
+}
+
+let testFlatMap = maybeString.map(doubleMe)
+println(testFlatMap)
+emptyString.map(doubleMe)
+
+
