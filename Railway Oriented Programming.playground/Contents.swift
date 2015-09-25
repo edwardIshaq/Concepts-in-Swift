@@ -4,18 +4,6 @@ import UIKit
 
 var str = "Hello, playground"
 
-//Function Composition
-infix operator >>> { associativity left precedence 10 }
-public func >>> <A, B, C>(f: B -> C, g: A -> B) -> A -> C {
-    return { x in f(g(x)) }
-}
-
-infix operator <%> { associativity left precedence 100 }
-public func <%><A,B>(f: A->B, x:A) -> B {
-    return f(x)
-}
-
-
 public enum Result<T> {
     case success(T)
     case failure(ErrorType)
@@ -75,3 +63,104 @@ func validateRequest(twoTrackInput: Result<String>) -> Result<String> {
         >>= validateLength
         >>= validateName
 }
+
+public func map<A,B>(singleTrack: A -> B) -> Result<A> -> Result<B> {
+    return { (twoTrack: Result<A>) in
+        switch twoTrack {
+        case .success(let x):
+            return Result.success(singleTrack(x))
+            
+        case .failure(let error):
+            return Result.failure(error)
+        }
+    }
+}
+
+func capitalize(name: String) -> String {
+    if name.characters.count == 0 {
+        return name
+    }
+    var nameOfString = name
+    nameOfString.replaceRange(nameOfString.startIndex...nameOfString.startIndex, with: String(nameOfString[nameOfString.startIndex]).capitalizedString)
+    return nameOfString
+}
+
+capitalize("")
+capitalize("a")
+capitalize("ab")
+capitalize("3b")
+
+map(capitalize)
+
+public func tee<A>(deadEndFunction: A->()) -> A -> A {
+    return { x in
+        deadEndFunction(x)
+        return x
+    }
+}
+
+
+func log(x: Any) {
+    print(x)
+}
+
+let tLog = tee(log)
+
+let test = tLog("asdlkj")
+
+struct Person {
+    let name: String
+    let age: Int
+}
+
+enum InputError: ErrorType {
+    case InputMissing
+    case AgeIncorrect
+}
+
+func createPerson(name: String?, age: String?) throws -> Person {
+    guard let age = age, let name = name
+        where name.characters.count > 0 && age.characters.count > 0
+        else {
+            throw InputError.InputMissing
+    }
+    
+    guard let ageFormatted = Int(age) else {
+        throw InputError.AgeIncorrect
+    }
+    
+    return Person(name: name, age: ageFormatted)
+
+}
+
+do {
+    let person = try createPerson("1", age: "5*65")
+}
+catch let error {
+    print(error, terminator: "")
+}
+
+if let person = try? createPerson("1", age: "65") {
+    print(person)
+}
+else {
+    print("failed to create a person")
+}
+
+func lift<A,B>(f: A throws -> B ) -> A -> Result<B> {
+    return { a in
+        do {
+            let b = try f(a)
+            return Result.success(b)
+        }
+        catch let error {
+            print(error)
+            return Result.failure(error)
+        }
+    }
+}
+
+let liftedCreate = lift(createPerson)
+
+liftedCreate(("",""))
+
