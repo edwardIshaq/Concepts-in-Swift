@@ -42,7 +42,7 @@ class AppleDataSource: DataSource {
     var elements = [Person]()
     
     func generateElements() -> [Person] {
-        var generatedContact = AppleContact(id: Int(count(elements)), title: String("Apple #\(self.elements.count)"))
+        let generatedContact = AppleContact(id: Int(elements.count), title: String("Apple #\(self.elements.count)"))
         elements.append(generatedContact)
         return elements
     }
