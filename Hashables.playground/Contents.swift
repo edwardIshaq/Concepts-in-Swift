@@ -11,10 +11,10 @@ let p1Dec = NSDecimalNumber(integer: p1)
 let p2Dec = NSDecimalNumber(integer: p2)
 
 public func combineHashables<T: Hashable>(xs: [T]) -> Int {
-    return Int(combinedHashablesDec(xs))
+    return Int(combineHashablesDec(xs))
 }
 
-public func combinedHashablesDec<T: Hashable>(xs: [T]) -> NSDecimalNumber {
+public func combineHashablesDec<T: Hashable>(xs: [T]) -> NSDecimalNumber {
     return xs.reduce(p1Dec) { (acc, x) -> NSDecimalNumber in
         //return acc * p2 + x
         let accP2 = acc.decimalNumberByMultiplyingBy(p2Dec)
@@ -25,7 +25,13 @@ public func combinedHashablesDec<T: Hashable>(xs: [T]) -> NSDecimalNumber {
     }
 }
 
-func combineHashes(xs: [Int]) -> Int {
+extension Array where Element: Hashable {
+    public func combinedHash() -> Int {
+        return combineHashables(self)
+    }
+}
+
+func combineSmallHashes(xs: [Int]) -> Int {
     let combo = xs.reduce(p1) { (acc, x) -> Int in
         return acc * p2 + x
     }
@@ -33,9 +39,9 @@ func combineHashes(xs: [Int]) -> Int {
 }
 
 let testArr = [5, 29, 12]
-combineHashes(testArr)
-combinedHashablesDec(testArr)
-combineHashables(testArr)
+
+combineSmallHashes(testArr) == combineHashablesDec(testArr)
+combineHashables(testArr) == combineHashablesDec(testArr)
 
 
 //Test combinedHashDec
@@ -45,32 +51,17 @@ let hash1 = str1.hashValue
 let str2 = "Ishaq"
 let hash2 = str2.hashValue
 
-let hashes = [hash1, hash2]
-//combineHashes(hashes) -- FAILS
-let comboInt = combineHashables(hashes)
-combinedHashablesDec(hashes).stringValue
+let strings = [str1, str2]
+let hashes = strings.map{ $0.hashValue }
 
-combinedHashablesDec([str1, str2]).stringValue == combinedHashablesDec(hashes).stringValue
-combinedHashablesDec([str1, str2]).integerValue == comboInt
+//Test some functions
 
+//combineHashes(hashes) // FAILS
+combineHashables(hashes)
+combineHashablesDec(hashes).stringValue
+combineHashablesDec(hashes).integerValue
 
-let hashDecimal = combinedHashablesDec([str1, str2])
-let strHash = hashDecimal.stringValue
-strHash.characters.count
+combineHashablesDec(strings).integerValue == combineHashables(hashes)
 
-Int(hashDecimal)
+strings.combinedHash() == combineHashables(hashes)
 
-
-let decHash = hashDecimal.decimalValue
-decHash._exponent
-decHash._length
-decHash._mantissa
-decHash._exponent
-
-UInt64.max
-"18446744073709551615".characters.count
-
-
-Int64.max
-Int64.min
-NSDecimalNumber(integer: 6)
