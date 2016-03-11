@@ -41,4 +41,33 @@ extension Event: ResourceConvertible {
 let event = Event(name: "holiday")
 event.syncResource()
 
+var str = "Hello, playground"
+
+public protocol SignalProducerType {
+    typealias Value
+    typealias Error: ErrorType
+    
+    init(value: Value)
+    
+    func checkError() -> Error?
+}
+
+
+public struct SignalProducer<Value, Error: ErrorType> : SignalProducerType {
+    let _val: Value
+    public init(value: Value) {
+        _val = value
+    }
+    
+    public func checkError() -> Error? {
+        return nil
+    }
+}
+
+extension SignalProducer {
+    public func combine() -> (Value, Error?) {
+        return (_val, nil)
+    }
+}
+
 //: [Next](@next)
