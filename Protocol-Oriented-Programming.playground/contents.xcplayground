@@ -1,2 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<playground version='6.0' target-platform='ios'/>
+<playground version='6.0' target-platform='ios'>
+    <pages>
+        <page name='DataSource'/>
+        <page name='ResourceConvertible'/>
+        <page name='ReactiveVC'/>
+        <page name='PrimaryKeyConvertible'/>
+    </pages>
+</playground>
